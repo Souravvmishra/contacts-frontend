@@ -1,66 +1,61 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify';
+import React, { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
+import { isTokenValid } from '../../HOC/checkAuth';
+import { notify } from "../../utility/notify";
 
-
-
-const RegisterForm = () => {
-    const [username, setUsername] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    // const [error, setError] = useState(null)
+const LoginForm = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const navigate = useNavigate()
 
-    const notify = (error) => toast.error(error, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-    });;
+    const { state } = useLocation();
+    const response = state && state.response;
 
 
     function handleSubmit(event) {
         event.preventDefault();
-        
+        if (!email || !password) {
+            notify('Please enter email and password')
+            return
+        }
 
-        fetch('http://localhost:5001/api/users/register', {
+        fetch(`${process.env.REACT_APP_API_URL}/api/users/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username, email, password })
+            body: JSON.stringify({ email, password })
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(response.status);
+                    throw new Error(response.statusText);
                 }
-                return response.json()
+                return response.json();
             })
             .then(data => {
-                console.log(data);
-                navigate('/login', { state: { "response": data } });
-
+                localStorage.setItem('accessToken', data.accessToken);
+                navigate('/');
             })
-            .catch((error) => {
-                console.log(error);
-                if (error.message === '400') {
-                    error.response.json().then(data => {
-                        notify(data.message);
-                    });
-                } else {
-                    notify('Something went wrong. Please try again later.');
-                }
+            .catch(error => {
+                notify('Invalid credentials');
             });
     }
 
+
+    useEffect(() => {
+        response && notify(`${response.email} Registered Successfully` );
+        const token = localStorage.getItem("accessToken")
+        if (token && isTokenValid(token)) {
+            navigate("/")
+        }
+        
+    })
 
 
 
@@ -71,28 +66,10 @@ const RegisterForm = () => {
 
 
                     <h2 className='text-3xl md:text-4xl md:font-semibold pb-14 font-medium 
-                    underline'>Register Yourself Here!</h2>
-
-
-
+                    underline'>Login Yourself Here!</h2>
 
                     <form onSubmit={handleSubmit} >
-                        <div className="mb-5">
-                            <label
-                                htmlFor="name"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
-                            >
-                                Full Name
-                            </label>
-                            <input
-                                onChange={(e) => setUsername(e.target.value)}
-                                type="text"
-                                name="name"
-                                id="name"
-                                placeholder="Full Name"
-                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                            />
-                        </div>
+
                         <div className="mb-5">
                             <label
                                 htmlFor="email"
@@ -141,9 +118,8 @@ const RegisterForm = () => {
 
             <ToastContainer />
 
-
         </div>
     )
 }
 
-export default RegisterForm
+export default LoginForm

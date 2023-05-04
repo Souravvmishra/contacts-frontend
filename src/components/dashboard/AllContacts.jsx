@@ -5,7 +5,7 @@ const AllContacts = () => {
     const [contacts, setContacts] = useState([])
 
     useEffect(() => {
-      fetch('http://localhost:5001/api/contacts', {
+      fetch(`${process.env.REACT_APP_API_URL}/api/contacts`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -19,7 +19,6 @@ const AllContacts = () => {
           return response.json();
         })
         .then(data => {
-          console.log(data);
           setContacts(data);
         })
         .catch(error => {

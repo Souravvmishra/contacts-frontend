@@ -27,7 +27,7 @@ const UserInfo = () => {
     });;
 
     useEffect(() => {
-        fetch('http://localhost:5001/api/users/current', {
+        fetch('https://contacts-backend-yqhp.onrender.com/api/users/current', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
@@ -57,7 +57,7 @@ const UserInfo = () => {
             return;
         }
         setIsSubmitting(true);
-        fetch('http://localhost:5001/api/contacts', {
+        fetch(`${process.env.REACT_APP_API_URL}/api/contacts`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,8 +71,8 @@ const UserInfo = () => {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 if (data.message) {
+                    console.log(data);
                     notify(data.message)
                     return
                 }
@@ -82,11 +82,9 @@ const UserInfo = () => {
                 setPhone('');
                 console.log(data);
 
-                // do something with data
             })
             .catch((error) => {
                 console.error(error);
-                // handle error
             })
             .finally(() => setIsSubmitting(false));
     };
@@ -103,7 +101,7 @@ const UserInfo = () => {
 
 
                     <h2 className='text-3xl md:text-4xl md:font-semibold pb-14 font-medium 
-                    underline'>Login Yourself Here!</h2>
+                    underline'>Add New Contact : </h2>
 
                     <form onSubmit={handleSubmit} >
 

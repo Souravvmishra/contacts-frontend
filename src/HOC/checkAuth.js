@@ -1,8 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import React from 'react'
+import Unauth from "../components/auth/Unauth";
 
 
-function isTokenValid(token) {
+
+export function isTokenValid(token) {
   const decodedToken = JSON.parse(window.atob(token.split('.')[1])); // decode the token payload
 
   if (decodedToken.exp && decodedToken.exp < Date.now() / 1000) {
@@ -17,14 +19,15 @@ function isTokenValid(token) {
 export const checkAuth = (Component) => {
   return (props) => {
     const token = localStorage.getItem("accessToken");
-    const navigate = useNavigate();
 
     if (token && isTokenValid(token)) {
       return <Component {...props} />;
     } else {
       return <>
-      <Link to={"/login"}>Go To Login </Link>
+      {localStorage.clear()}
+      <Unauth />
       </>
+
     }
   }
 }
