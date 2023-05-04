@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom";
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { checkAuth } from '../../HOC/checkAuth';
+import { notify } from "../../utility/notify"
 
 
 const UserInfo = () => {
@@ -15,16 +16,7 @@ const UserInfo = () => {
 
     const [user, setUser] = useState({})
 
-    const notify = (message) => toast(`${message} `, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-    });;
+
 
     useEffect(() => {
         fetch('https://contacts-backend-yqhp.onrender.com/api/users/current', {

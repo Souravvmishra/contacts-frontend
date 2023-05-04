@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -20,7 +20,7 @@ const RegisterForm = () => {
 
     function handleSubmit(event) {
         event.preventDefault();
-        
+
 
         fetch(`${process.env.REACT_APP_API_URL}/api/users/register`, {
             method: 'POST',
@@ -47,8 +47,8 @@ const RegisterForm = () => {
             })
             .catch((error) => {
                 console.log(error);
-                    notify('Something went wrong. Please try again later.');
-                
+                notify('Something went wrong. Please try again later.');
+
             });
     }
 
@@ -126,6 +126,13 @@ const RegisterForm = () => {
 
 
                         </div>
+                        <div className='my-14'>
+                            <Link className=' hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none cursor-pointer
+                '           to={"/login"}>Already Have Account</Link>
+
+
+                        </div>
+
                     </form>
                 </div>
             </div>

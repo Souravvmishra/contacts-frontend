@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
-import React from 'react'
-import Unauth from "../components/auth/Unauth";
+import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -17,19 +16,22 @@ export function isTokenValid(token) {
 
 
 export const checkAuth = (Component) => {
+  const token = localStorage.getItem("accessToken");
   return (props) => {
-    const token = localStorage.getItem("accessToken");
+    const navigate = useNavigate()
+
+    useEffect(() => {
+      if (!token || !isTokenValid(token)) {
+        navigate('/login');
+      }
+    });
 
     if (token && isTokenValid(token)) {
       return <Component {...props} />;
     } else {
-      return <>
-      {localStorage.clear()}
-      <Unauth />
-      </>
-
+      return null
     }
   }
 }
 
- 
+

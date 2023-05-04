@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -49,12 +49,12 @@ const LoginForm = () => {
 
 
     useEffect(() => {
-        response && notify(`${response.email} Registered Successfully` );
+        response && notify(`${response.email} Registered Successfully`);
         const token = localStorage.getItem("accessToken")
         if (token && isTokenValid(token)) {
             navigate("/")
         }
-        
+
     })
 
 
@@ -105,15 +105,28 @@ const LoginForm = () => {
 
                         <div>
                             <input
-                                className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none"
+                                className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none cursor-pointer"
                                 type='submit'
                                 value='Sign Up'
                             />
 
 
                         </div>
+
+                        <div className='my-14'>
+                            <Link className=' hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none cursor-pointer
+                '           to={"/register"}>Register Here</Link>
+
+
+                        </div>
                     </form>
                 </div>
+
+
+            </div>
+
+            <div className='text-xl px-24  '>
+
             </div>
 
             <ToastContainer />
