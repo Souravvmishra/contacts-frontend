@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 
 
 export function isTokenValid(token) {
+  if (token === null){
+    return false;
+  }
   const decodedToken = JSON.parse(window.atob(token.split('.')[1])); // decode the token payload
 
   if (decodedToken.exp && decodedToken.exp < Date.now() / 1000) {
@@ -15,23 +18,26 @@ export function isTokenValid(token) {
 
 
 
-export const checkAuth = (Component) => {
+const CheckAuth = (props) => {
+  const {Component} = props
   const token = localStorage.getItem("accessToken");
-  return (props) => {
-    const navigate = useNavigate()
+  const navigate = useNavigate()
 
-    useEffect(() => {
-      if (!token || !isTokenValid(token)) {
-        navigate('/login');
-      }
-    });
-
-    if (token && isTokenValid(token)) {
-      return <Component {...props} />;
-    } else {
-      return null
-    }
+  useEffect(()=> {
+    if (!isTokenValid(token)) {
+      console.log(!isTokenValid(token));
+      navigate("/login")
   }
+})
+
+  return (
+    <div>
+      <Component />
+    </div>
+  )
 }
 
+export default CheckAuth
 
+
+ 

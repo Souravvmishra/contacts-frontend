@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { checkAuth } from '../../HOC/checkAuth';
 import { notify } from "../../utility/notify"
 
 
@@ -153,7 +152,7 @@ const UserInfo = () => {
                             <input
                                 className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none"
                                 type='submit'
-                                value='Add Contact'
+                                value= {isSubmitting ? 'wait...' : 'Add Contact'}
                             />
 
 
@@ -172,4 +171,4 @@ const UserInfo = () => {
     )
 }
 
-export default checkAuth(UserInfo)
+export default UserInfo

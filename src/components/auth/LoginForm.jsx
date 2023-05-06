@@ -5,17 +5,16 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-import { isTokenValid } from '../../HOC/checkAuth';
 import { notify } from "../../utility/notify";
+import { isTokenValid } from '../../HOC/checkAuth';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate()
 
-    const { state } = useLocation();
-    const response = state && state.response;
 
 
     function handleSubmit(event) {
@@ -24,7 +23,8 @@ const LoginForm = () => {
             notify('Please enter email and password')
             return
         }
-
+        
+        setLoading(true)
         fetch(`${process.env.REACT_APP_API_URL}/api/users/login`, {
             method: 'POST',
             headers: {
@@ -40,23 +40,30 @@ const LoginForm = () => {
             })
             .then(data => {
                 localStorage.setItem('accessToken', data.accessToken);
+                console.log(data.accessToken);
                 navigate('/');
+                return null
             })
             .catch(error => {
                 notify('Invalid credentials');
-            });
+            })
+            .finally(() => setLoading(false));
     }
 
 
+    const { state } = useLocation();
+    const response = state && state.response;
+    
+    
+
     useEffect(() => {
         response && notify(`${response.email} Registered Successfully`);
-        const token = localStorage.getItem("accessToken")
-        if (token && isTokenValid(token)) {
-            navigate("/")
+        if (isTokenValid(localStorage.getItem("accessToken"))) {
+            navigate('/');
         }
-
     })
 
+   
 
 
     return (
@@ -105,16 +112,17 @@ const LoginForm = () => {
 
                         <div>
                             <input
-                                className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none cursor-pointer"
+                                
+                                className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none cursor-pointer "
                                 type='submit'
-                                value='Sign Up'
+                                value= {loading ? 'wait...' : 'Log In'}
                             />
 
 
                         </div>
 
                         <div className='my-14'>
-                            <Link className=' hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none cursor-pointer
+                            <Link  className=' hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none cursor-pointer
                 '           to={"/register"}>Register Here</Link>
 
 
@@ -135,4 +143,4 @@ const LoginForm = () => {
     )
 }
 
-export default LoginForm
+export default (LoginForm)

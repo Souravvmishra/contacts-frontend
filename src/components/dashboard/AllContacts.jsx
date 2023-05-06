@@ -1,5 +1,4 @@
 import React, { useEffect, useState} from 'react'
-import { checkAuth } from '../../HOC/checkAuth';
 
 const AllContacts = () => {
     const [contacts, setContacts] = useState([])
@@ -53,4 +52,4 @@ const AllContacts = () => {
   )
 }
 
-export default checkAuth(AllContacts)
+export default AllContacts
