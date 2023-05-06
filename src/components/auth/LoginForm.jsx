@@ -23,7 +23,7 @@ const LoginForm = () => {
             notify('Please enter email and password')
             return
         }
-        
+
         setLoading(true)
         fetch(`${process.env.REACT_APP_API_URL}/api/users/login`, {
             method: 'POST',
@@ -53,8 +53,8 @@ const LoginForm = () => {
 
     const { state } = useLocation();
     const response = state && state.response;
-    
-    
+
+
 
     useEffect(() => {
         response && notify(`${response.email} Registered Successfully`);
@@ -63,84 +63,60 @@ const LoginForm = () => {
         }
     })
 
-   
+
 
 
     return (
-        <div>
-            <div className="flex items-center justify-center p-12">
-                <div className="mx-auto w-full max-w-[550px]">
-
-
-                    <h2 className='text-3xl md:text-4xl md:font-semibold pb-14 font-medium 
-                    underline'>Login Yourself Here!</h2>
-
-                    <form onSubmit={handleSubmit} >
-
-                        <div className="mb-5">
-                            <label
-                                htmlFor="email"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
-                            >
-                                Email Address
-                            </label>
-                            <input
-                                onChange={(e) => setEmail(e.target.value)}
-                                type="email"
-                                name="email"
-                                id="email"
-                                placeholder="example@domain.com"
-                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                            />
-                        </div>
-                        <div className="mb-5">
-                            <label
-                                htmlFor="subject"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
-                            >
-                                Password
-                            </label>
-                            <input
-                                onChange={(e) => setPassword(e.target.value)}
-                                type="password"
-                                name="password"
-                                id="password"
-                                placeholder="Enter your subject"
-                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                            />
-                        </div>
-
-                        <div>
-                            <input
-                                
-                                className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none cursor-pointer "
-                                type='submit'
-                                value= {loading ? 'wait...' : 'Log In'}
-                            />
-
-
-                        </div>
-
-                        <div className='my-14'>
-                            <Link  className=' hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none cursor-pointer
-                '           to={"/register"}>Register Here</Link>
-
-
-                        </div>
-                    </form>
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-pink-500">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+                <h2 className="text-3xl font-bold mb-8">Welcome Back!</h2>
+                <form onClick={handleSubmit}>
+                    <div className="mb-6">
+                        <label htmlFor="email" className="block font-semibold mb-2">
+                            Email
+                        </label>
+                        <input
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            type="email"
+                            id="email"
+                            className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
+                            placeholder="Enter your email"
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label htmlFor="password" className="block font-semibold mb-2">
+                            Password
+                        </label>
+                        <input
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            type="password"
+                            id="password"
+                            className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
+                            placeholder="Enter your password"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300"
+                    >
+                        Login
+                    </button>
+                </form>
+                <div className="mt-4 text-center">
+                    <span className="text-gray-500">Don't have an account?</span>{' '}
+                    <Link
+                        to="/register"
+                        className="text-purple-500 font-semibold hover:underline transition-colors duration-300"
+                    >
+                        Register here
+                    </Link>
                 </div>
-
-
             </div>
-
-            <div className='text-xl px-24  '>
-
-            </div>
-
-            <ToastContainer />
-
         </div>
-    )
+    );
+
 }
 
 export default (LoginForm)

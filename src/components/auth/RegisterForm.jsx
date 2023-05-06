@@ -56,90 +56,66 @@ const RegisterForm = () => {
 
 
     return (
-        <div>
-            <div className="flex items-center justify-center p-12">
-                <div className="mx-auto w-full max-w-[550px]">
-
-
-                    <h2 className='text-3xl md:text-4xl md:font-semibold pb-14 font-medium 
-                    underline'>Register Yourself Here!</h2>
-
-
-
-
-                    <form onSubmit={handleSubmit} >
-                        <div className="mb-5">
-                            <label
-                                htmlFor="name"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
-                            >
-                                Full Name
-                            </label>
-                            <input
-                                onChange={(e) => setUsername(e.target.value)}
-                                type="text"
-                                name="name"
-                                id="name"
-                                placeholder="Full Name"
-                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                            />
-                        </div>
-                        <div className="mb-5">
-                            <label
-                                htmlFor="email"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
-                            >
-                                Email Address
-                            </label>
-                            <input
-                                onChange={(e) => setEmail(e.target.value)}
-                                type="email"
-                                name="email"
-                                id="email"
-                                placeholder="example@domain.com"
-                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                            />
-                        </div>
-                        <div className="mb-5">
-                            <label
-                                htmlFor="subject"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
-                            >
-                                Password
-                            </label>
-                            <input
-                                onChange={(e) => setPassword(e.target.value)}
-                                type="password"
-                                name="password"
-                                id="password"
-                                placeholder="Enter your subject"
-                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                            />
-                        </div>
-
-                        <div>
-                            <input
-                                className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none"
-                                type='submit'
-                                value='Sign Up'
-                            />
-
-
-                        </div>
-                        <div className='my-14'>
-                            <Link className=' hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none cursor-pointer
-                '           to={"/login"}>Already Have Account</Link>
-
-
-                        </div>
-
-                    </form>
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-pink-500">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+                <h2 className="text-3xl font-bold mb-8">Create an Account</h2>
+                <form>
+                    <div className="mb-6">
+                        <label htmlFor="name" className="block font-semibold mb-2">
+                            Name
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
+                            placeholder="Enter your name"
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label htmlFor="email" className="block font-semibold mb-2">
+                            Email
+                        </label>
+                        <input
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                            type="email"
+                            id="email"
+                            className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
+                            placeholder="Enter your email"
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label htmlFor="password" className="block font-semibold mb-2">
+                            Password
+                        </label>
+                        <input
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            type="password"
+                            id="password"
+                            className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
+                            placeholder="Enter your password"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300"
+                    >
+                        Register
+                    </button>
+                </form>
+                <div className="mt-4 text-center">
+                    <span className="text-gray-500">Already have an account?</span>{' '}
+                    <Link
+                        to="/login"
+                        className="text-purple-500 font-semibold hover:underline transition-colors duration-300"
+                    >
+                        Login here
+                    </Link>
                 </div>
             </div>
-
-            <ToastContainer />
-
-
         </div>
     )
 }

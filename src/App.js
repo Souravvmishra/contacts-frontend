@@ -7,6 +7,7 @@ import AllContacts from "./components/dashboard/AllContacts";
 import UserInfo from "./components/dashboard/UserInfo";
 import Unauth from "./components/auth/Unauth";
 import CheckAuth from "./HOC/checkAuth";
+import LoginPage from "./LoginPage";
 
 
 function App() {
