@@ -40,7 +40,7 @@ const LoginForm = () => {
             })
             .then(data => {
                 localStorage.setItem('accessToken', data.accessToken);
-                console.log(data.accessToken);
+                // console.log(data.accessToken);
                 navigate('/');
                 return null
             })
@@ -70,6 +70,7 @@ const LoginForm = () => {
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-pink-500">
             <div className="bg-white rounded-lg shadow-lg p-8">
                 <h2 className="text-3xl font-bold mb-8">Welcome Back!</h2>
+
                 <form onClick={handleSubmit}>
                     <div className="mb-6">
                         <label htmlFor="email" className="block font-semibold mb-2">
@@ -103,6 +104,7 @@ const LoginForm = () => {
                     >
                         Login
                     </button>
+
                 </form>
                 <div className="mt-4 text-center">
                     <span className="text-gray-500">Don't have an account?</span>{' '}

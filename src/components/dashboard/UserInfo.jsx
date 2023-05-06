@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,31 +17,31 @@ const UserInfo = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [contacts, setContacts] = useState([])
     const [user, setUser] = useState({})
+    const [token, setToken] = useState(localStorage.getItem("accessToken"))
 
+    const navigate = useNavigate()
 
-     useEffect(() => {
-        console.log("contacts");
+    useEffect(() => {
 
-      fetch(`${process.env.REACT_APP_API_URL}/api/contacts`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem("accessToken")}`
-        }
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(response.statusText);
-          }
-          return response.json();
+        fetch(`${process.env.REACT_APP_API_URL}/api/contacts`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
         })
-        .then(data => {
-            console.log(data);
-          setContacts(data.sort((a, b) => a.name.localeCompare(b.name)));
-        })
-        .catch(error => {
-          console.error('Error fetching contacts:', error);
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                setContacts(data.sort((a, b) => a.name.localeCompare(b.name)));
+            })
+            .catch(error => {
+                console.error('Error fetching contacts:', error);
+            });
     }, []);
 
 
@@ -50,8 +50,8 @@ const UserInfo = () => {
         fetch(`${process.env.REACT_APP_API_URL}/api/users/current`, {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-                // 'Content-Type': 'application/json'
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
         })
             .then(response => {
@@ -62,14 +62,14 @@ const UserInfo = () => {
             })
             .then(data => {
                 setUser(data)
-                console.log(data);
+                // console.log(data);
             })
             .catch(error => {
 
                 console.error(error);
             });
 
-    }, [])
+    }, [token])
 
 
     const handleSubmit = (event) => {
@@ -82,7 +82,7 @@ const UserInfo = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
                 name,
@@ -110,7 +110,8 @@ const UserInfo = () => {
             })
             .finally(() => {
                 handleModalClose()
-                setIsSubmitting(false)});
+                setIsSubmitting(false)
+            });
     };
 
 
@@ -125,22 +126,43 @@ const UserInfo = () => {
         setIsModalOpen(false);
     };
 
+    const logOut = () => {
+        localStorage.clear()
+        setToken(null)
+        navigate("/")
+    }
+
+    if (!user || !contacts) {
+        return (
+            <div>
+                <h1 className='text-2xl flex justify-center h-screen items-center font-semibold'>Loading...</h1>
+            </div>
+        )
+        
+    }
+
 
 
     return (
-        <div className="p-8">
-            <h2 className="text-3xl font-bold mb-8">Welcome, {}{user.email}!</h2>
-            <div className="bg-white min-w-fit rounded-lg shadow-lg p-8">
-                <div className="flex justify-end mb-4">
-                    <button
-                        className="bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300"
-                        onClick={handleModalOpen}
-                    >
-                        Add Contact
-                    </button>
-                    
-                </div>
-                < AllContacts contacts = {contacts} setContacts = {setContacts}/>
+        <div className="p-8 ">
+            <div className="flex justify-evenly space-x-2 mb-8 ">
+                <h2 className="text-3xl font-bold ">Welcome, { }{user.email}!</h2>
+
+                <button
+                    className="bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300"
+                    onClick={handleModalOpen}
+                >
+                    Add Contact
+                </button>
+                <button
+                    className="bg-purple-500/50 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300"
+                    onClick={logOut}
+                >
+                    Log Out
+                </button>
+            </div>
+            <div className="bg-white overflow-auto rounded-lg shadow-lg p-8">
+                < AllContacts contacts={contacts} setContacts={setContacts} />
 
                 {/* Render contacts here */}
             </div>
@@ -208,7 +230,7 @@ const UserInfo = () => {
                     </div>
                 </div>
             )}
-        <ToastContainer />
+            <ToastContainer />
         </div>
     );
 }

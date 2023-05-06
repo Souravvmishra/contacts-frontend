@@ -25,7 +25,6 @@ const CheckAuth = (props) => {
 
   useEffect(()=> {
     if (!isTokenValid(token)) {
-      console.log(!isTokenValid(token));
       navigate("/login")
   }
 })
