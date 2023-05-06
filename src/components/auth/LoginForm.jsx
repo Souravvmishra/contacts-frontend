@@ -114,6 +114,7 @@ const LoginForm = () => {
                     </Link>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 

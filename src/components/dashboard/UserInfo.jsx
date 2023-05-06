@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+
 import { notify } from "../../utility/notify"
+import AllContacts from "../dashboard/AllContacts";
 
 
 const UserInfo = () => {
@@ -12,13 +15,39 @@ const UserInfo = () => {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-
+    const [contacts, setContacts] = useState([])
     const [user, setUser] = useState({})
+
+
+     useEffect(() => {
+        console.log("contacts");
+
+      fetch(`${process.env.REACT_APP_API_URL}/api/contacts`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem("accessToken")}`
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+            console.log(data);
+          setContacts(data.sort((a, b) => a.name.localeCompare(b.name)));
+        })
+        .catch(error => {
+          console.error('Error fetching contacts:', error);
+        });
+    }, []);
 
 
 
     useEffect(() => {
-        fetch('https://contacts-backend-yqhp.onrender.com/api/users/current', {
+        fetch(`${process.env.REACT_APP_API_URL}/api/users/current`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
@@ -41,6 +70,7 @@ const UserInfo = () => {
             });
 
     }, [])
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -68,6 +98,7 @@ const UserInfo = () => {
                     return
                 }
                 notify(`${data.name} added successfully`);
+                setContacts((contacts) => [...contacts, data])
                 setName('');
                 setEmail('');
                 setPhone('');
@@ -77,98 +108,109 @@ const UserInfo = () => {
             .catch((error) => {
                 console.error(error);
             })
-            .finally(() => setIsSubmitting(false));
+            .finally(() => {
+                handleModalClose()
+                setIsSubmitting(false)});
+    };
+
+
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleModalOpen = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
     };
 
 
 
     return (
-        <div className=''>
-            <div className='text-2xl px-12'>Email : {user.email}</div>
-            <div className='text-2xl px-12 pb-4'>Password : {user.username}</div>
-
-            <div className="flex items-center justify-center p-12">
-                <div className="mx-auto w-full max-w-[550px]">
-
-
-                    <h2 className='text-3xl md:text-4xl md:font-semibold pb-14 font-medium 
-                    underline'>Add New Contact : </h2>
-
-                    <form onSubmit={handleSubmit} >
-
-                        <div className="mb-5">
-                            <label
-                                htmlFor="name"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
-                            >
-                                Name
-                            </label>
-                            <input
-                                onChange={(e) => setName(e.target.value)}
-                                value={name}
-                                type="text"
-                                name="name"
-                                id="name"
-                                placeholder="Name"
-                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                            />
-                        </div>
-                        <div className="mb-5">
-                            <label
-                                htmlFor="email"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
-                            >
-                                Email Address
-                            </label>
-                            <input
-                                onChange={(e) => setEmail(e.target.value)}
-                                value={email}
-                                type="email"
-                                name="email"
-                                id="email"
-                                placeholder="example@domain.com"
-                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                            />
-                        </div>
-                        <div className="mb-5">
-                            <label
-                                htmlFor="phone"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
-                            >
-                                Phone Number
-                            </label>
-                            <input
-                                onChange={(e) => setPhone(e.target.value)}
-                                value={phone}
-                                type="text"
-                                name="phone"
-                                id="phone"
-                                placeholder="Enter your subject"
-                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                            />
-                        </div>
-
-                        <div>
-                            <input
-                                className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-base font-semibold text-white outline-none"
-                                type='submit'
-                                value= {isSubmitting ? 'wait...' : 'Add Contact'}
-                            />
-
-
-                        </div>
-                    </form>
+        <div className="p-8">
+            <h2 className="text-3xl font-bold mb-8">Welcome, {}{user.email}!</h2>
+            <div className="bg-white min-w-fit rounded-lg shadow-lg p-8">
+                <div className="flex justify-end mb-4">
+                    <button
+                        className="bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300"
+                        onClick={handleModalOpen}
+                    >
+                        Add Contact
+                    </button>
+                    
                 </div>
+                < AllContacts contacts = {contacts} setContacts = {setContacts}/>
+
+                {/* Render contacts here */}
             </div>
 
-
-
-            <Link to="/contacts" className='underline decoration-dashed hover:text-xl duration-150'>View All Contacts</Link>
-            <ToastContainer />
-
-
+            {/* Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-lg p-8">
+                        <h3 className="text-xl font-semibold mb-4">Add Contact</h3>
+                        <form onSubmit={handleSubmit}>
+                            <div className="mb-4">
+                                <label htmlFor="name" className="block font-semibold mb-2">
+                                    Name
+                                </label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
+                                    placeholder="Enter name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label htmlFor="email" className="block font-semibold mb-2">
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
+                                    placeholder="Enter email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label htmlFor="phone" className="block font-semibold mb-2">
+                                    Phone
+                                </label>
+                                <input
+                                    type="text"
+                                    id="phone"
+                                    className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
+                                    placeholder="Enter phone"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                />
+                            </div>
+                            <div className="flex justify-end">
+                                <button className="bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300 mr-2"
+                                    type="submit"
+                                >
+                                    Add
+                                </button>
+                                <button
+                                    className="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded hover:bg-gray-400 transition-colors duration-300"
+                                    onClick={handleModalClose}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        <ToastContainer />
         </div>
-    )
+    );
 }
 
 export default UserInfo

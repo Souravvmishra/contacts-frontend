@@ -1,16 +1,19 @@
-import React, { useEffect, useState} from 'react'
+import React, { useState } from 'react'
+import {notify} from "../../utility/notify"
+import { ToastContainer } from 'react-toastify';
 
-const AllContacts = () => {
-    const [contacts, setContacts] = useState([])
+const AllContacts = ({ contacts, setContacts }) => {
 
-    useEffect(() => {
-      fetch(`${process.env.REACT_APP_API_URL}/api/contacts`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem("accessToken")}`
-        }
-      })
+  const handleDeleteContact = async (id) => {
+      try {
+        await fetch(`${process.env.REACT_APP_API_URL}/api/contacts/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("accessToken")}`
+
+          },
+        })
         .then(response => {
           if (!response.ok) {
             throw new Error(response.statusText);
@@ -18,36 +21,70 @@ const AllContacts = () => {
           return response.json();
         })
         .then(data => {
-          setContacts(data);
+            console.log(data);
+
+            notify(`${data.email} deleted `)
+            setContacts(contacts.filter(contact => contact._id !== id))
         })
-        .catch(error => {
-          console.error('Error fetching contacts:', error);
-        });
-    }, []);
+      } catch (error) {
+        console.error(error);
+      }
     
+  };
+
   return (
-    <div>
-      <h1 className='font-semibold text-2xl'>All Contacts</h1>
-      <div className='py-14 w-screen '>
+    <div className="">
+      <h2 className="text-3xl font-bold mb-8">Contacts</h2>
+      {contacts.length === 0 ? (
+        <p className="text-gray-500">No contacts available.</p>
+      ) : (
+        <table className="w-full border-collapse">
+          <thead className='text-left'>
+            <tr>
+              <th className="py-2 px-4 bg-gray-100 border-b font-semibold text-sm text-gray-700">
+                Name
+              </th>
+              <th className="py-2 px-4 bg-gray-100 border-b font-semibold text-sm text-gray-700">
+                Email
+              </th>
+              <th className="py-2 px-4 bg-gray-100 border-b font-semibold text-sm text-gray-700">
+                Phone
+              </th>
+              <th className="py-2 px-4 bg-gray-100 border-b font-semibold text-sm text-gray-700 ">
+                Actions
+              </th>
+              <th className="py-2 px-4 bg-gray-100 border-b font-semibold text-sm text-gray-700 ">
+                Actions
+              </th>
 
-      <table >
-        <tbody>
+            </tr>
+          </thead>
+          <tbody>
+            {contacts.map((contact) => (
+              <tr key={contact._id}>
+                <td className="py-2 px-4 border-b">{contact.name}</td>
+                <td className="py-2 px-4 border-b">{contact.email}</td>
+                <td className="py-2 px-4 border-b">{contact.phone}</td>
+                <td className="py-2 px-4 border-b">
+                  <button className="text-purple-500 font-semibold hover:underline mr-2">
+                    Update
+                  </button>
+                </td>
+                <td>
 
-      {contacts.map((contact) => {
-        return (
-          <tr key={contact.name+contact.phone}>
-            <td className='px-4 border-b-2 text-xl'>{contact.name}</td>
-            <td className='px-4 border-b-2 text-xl'>{contact.email}</td>
-            <td className='px-4 border-b-2 text-xl'>{contact.phone}</td>
-          </tr>
-        )
-      })}
-        </tbody>
-
-      </table>
-
-      </div>
-
+                  <button
+                    className="text-red-500 font-semibold hover:underline"
+                    onClick={() => handleDeleteContact(contact._id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <ToastContainer />
     </div>
   )
 }
