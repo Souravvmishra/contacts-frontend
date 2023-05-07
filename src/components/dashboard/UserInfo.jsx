@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -7,6 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { notify } from "../../utility/notify"
 import AllContacts from "../dashboard/AllContacts";
+import  Loader  from "../loader/Loader";
+import Modal from './Modal';
 
 
 const UserInfo = () => {
@@ -15,8 +17,8 @@ const UserInfo = () => {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [contacts, setContacts] = useState([])
-    const [user, setUser] = useState({})
+    const [contacts, setContacts] = useState(null)
+    const [user, setUser] = useState(null)
     const [token, setToken] = useState(localStorage.getItem("accessToken"))
 
     const navigate = useNavigate()
@@ -42,7 +44,7 @@ const UserInfo = () => {
             .catch(error => {
                 console.error('Error fetching contacts:', error);
             });
-    }, []);
+    }, [token]);
 
 
 
@@ -102,7 +104,6 @@ const UserInfo = () => {
                 setName('');
                 setEmail('');
                 setPhone('');
-                console.log(data);
 
             })
             .catch((error) => {
@@ -132,10 +133,13 @@ const UserInfo = () => {
         navigate("/")
     }
 
-    if (!user || !contacts) {
+    if (!user || !contacts ) {
         return (
             <div>
-                <h1 className='text-2xl flex justify-center h-screen items-center font-semibold'>Loading...</h1>
+                <h1 className='text-2xl flex justify-center h-screen items-center font-semibold'>
+                    <Loader />
+
+                </h1>
             </div>
         )
         
@@ -144,8 +148,8 @@ const UserInfo = () => {
 
 
     return (
-        <div className="p-8 ">
-            <div className="flex justify-evenly space-x-2 mb-8 ">
+        <div className={`p-8 ${isModalOpen} ? opacity-50 : ' `}>
+            <div className="flex justify-evenly space-x-2 mb-8 mx-14 ">
                 <h2 className="text-3xl font-bold ">Welcome, { }{user.email}!</h2>
 
                 <button
@@ -169,66 +173,7 @@ const UserInfo = () => {
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg shadow-lg p-8">
-                        <h3 className="text-xl font-semibold mb-4">Add Contact</h3>
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-4">
-                                <label htmlFor="name" className="block font-semibold mb-2">
-                                    Name
-                                </label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
-                                    placeholder="Enter name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label htmlFor="email" className="block font-semibold mb-2">
-                                    Email
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
-                                    placeholder="Enter email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label htmlFor="phone" className="block font-semibold mb-2">
-                                    Phone
-                                </label>
-                                <input
-                                    type="text"
-                                    id="phone"
-                                    className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
-                                    placeholder="Enter phone"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                />
-                            </div>
-                            <div className="flex justify-end">
-                                <button className="bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300 mr-2"
-                                    type="submit"
-                                >
-                                    Add
-                                </button>
-                                <button
-                                    className="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded hover:bg-gray-400 transition-colors duration-300"
-                                    onClick={handleModalClose}
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                <Modal handleSubmit = {handleSubmit} setName = {setName} setEmail= {setEmail} setPhone = {setPhone}  />
             )}
             <ToastContainer />
         </div>

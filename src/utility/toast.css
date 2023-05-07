@@ -1,0 +1,28 @@
+.toastBody {
+    font-family: "Atlas Grotesk Web", Arial, Helvetica, sans-serif;
+    color: #10171D; /* #10171D */
+    font-size: 13px !important;
+    font-weight: bold;
+    text-align: center;
+    height: 20px;
+
+
+  }
+  .toastProgress {
+    background: #333F48 !important;
+    height: 1.5px;
+  }
+
+  .toastClass{
+    background: #ffffff !important;
+    
+
+  }
+
+  .main{
+    background: white !important;
+    width: 80%;
+    margin: 1rem auto ;
+    padding: 0;
+    border-radius: 10px;
+  }

@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { notify } from "../../utility/notify";
 import { isTokenValid } from '../../HOC/checkAuth';
+import Loader from '../loader/Loader';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
@@ -23,8 +24,8 @@ const LoginForm = () => {
             notify('Please enter email and password')
             return
         }
-
         setLoading(true)
+
         fetch(`${process.env.REACT_APP_API_URL}/api/users/login`, {
             method: 'POST',
             headers: {
@@ -61,7 +62,7 @@ const LoginForm = () => {
         if (isTokenValid(localStorage.getItem("accessToken"))) {
             navigate('/');
         }
-    })
+    }, [navigate, response])
 
 
 
@@ -71,7 +72,7 @@ const LoginForm = () => {
             <div className="bg-white rounded-lg shadow-lg p-8">
                 <h2 className="text-3xl font-bold mb-8">Welcome Back!</h2>
 
-                <form onClick={handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <div className="mb-6">
                         <label htmlFor="email" className="block font-semibold mb-2">
                             Email
@@ -100,9 +101,10 @@ const LoginForm = () => {
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300"
+                        className="w-full flex justify-center bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300"
                     >
-                        Login
+                        {loading ? <Loader /> : 'LOG IN'}
+
                     </button>
 
                 </form>
@@ -111,8 +113,7 @@ const LoginForm = () => {
                     <Link
                         to="/register"
                         className="text-purple-500 font-semibold hover:underline transition-colors duration-300"
-                    >
-                        Register here
+                    >Register Here
                     </Link>
                 </div>
             </div>

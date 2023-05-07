@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {notify} from "../../utility/notify"
 import { ToastContainer } from 'react-toastify';
 
@@ -70,8 +70,7 @@ const AllContacts = ({ contacts, setContacts }) => {
                     Update
                   </button>
                 </td>
-                <td>
-
+                <td className="py-2 px-4 border-b">
                   <button
                     className="text-red-500 font-semibold hover:underline"
                     onClick={() => handleDeleteContact(contact._id)}

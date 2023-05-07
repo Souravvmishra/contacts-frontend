@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 import { notify } from "../../utility/notify";
+import Loader from '../loader/Loader';
 
 
 
@@ -13,7 +14,7 @@ const RegisterForm = () => {
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    // const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(null)
 
     const navigate = useNavigate()
 
@@ -21,7 +22,7 @@ const RegisterForm = () => {
     function handleSubmit(event) {
         event.preventDefault();
 
-
+        setLoading(true)
         fetch(`${process.env.REACT_APP_API_URL}/api/users/register`, {
             method: 'POST',
             headers: {
@@ -36,10 +37,9 @@ const RegisterForm = () => {
                 return response.json()
             })
             .then(data => {
-                console.log(data);
                 if (data.message) {
                     console.log(data);
-                    notify(data.message)
+                    notify.error(data.message)
                     return
                 }
                 navigate('/login', { state: { "response": data } });
@@ -49,17 +49,22 @@ const RegisterForm = () => {
                 console.log(error);
                 notify('Something went wrong. Please try again later.');
 
-            });
+            })
+            .finally(() => {
+                setLoading(false)
+            })
     }
 
 
 
 
     return (
+
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-pink-500">
+
             <div className="bg-white rounded-lg shadow-lg p-8">
                 <h2 className="text-3xl font-bold mb-8">Create an Account</h2>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="mb-6">
                         <label htmlFor="name" className="block font-semibold mb-2">
                             Name
@@ -78,8 +83,8 @@ const RegisterForm = () => {
                             Email
                         </label>
                         <input
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
                             type="email"
                             id="email"
                             className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
@@ -101,9 +106,9 @@ const RegisterForm = () => {
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300"
+                        className="flex justify-center w-full bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300 text-center"
                     >
-                        Register
+                        {loading ? <Loader /> : 'Register'}
                     </button>
                 </form>
                 <div className="mt-4 text-center">
@@ -116,6 +121,8 @@ const RegisterForm = () => {
                     </Link>
                 </div>
             </div>
+            <ToastContainer 
+            />
         </div>
     )
 }
