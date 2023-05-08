@@ -1,11 +1,30 @@
 import React from 'react'
+import { motion } from "framer-motion";
+
+
+
 
 const Modal = (props) => {
+
+    const animations = {
+        initial: { opacity: 0, y: 50 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.2 }
+
+    }
+
     return (
         <div>
-            <div className=" inset-0 flex items-center justify-center z-50 opacity-100 absolute">
-                <div className="bg-white rounded-lg shadow-lg p-8">
-                    <h3 className="text-xl font-semibold mb-4">Add Contact</h3>
+            <motion.div
+
+                className="bg-black/60 inset-0 flex items-center justify-center z-50 opacity-100 absolute duration-150">
+                <motion.div
+                    initial={animations.initial}
+                    animate={animations.animate}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={animations.transition}
+                    className="bg-white rounded-lg shadow-lg p-8">
+                    <h3 className="text-xl font-semibold mb-4">{props.head}</h3>
                     <form onSubmit={props.handleSubmit}>
                         <div className="mb-4">
                             <label htmlFor="name" className="block font-semibold mb-2">
@@ -54,7 +73,7 @@ const Modal = (props) => {
                                 Add
                             </button>
                             <button
-                            type='text'
+                                type='text'
                                 className="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded hover:bg-gray-400 transition-colors duration-300"
                                 onClick={props.handleModalClose}
                             >
@@ -62,8 +81,8 @@ const Modal = (props) => {
                             </button>
                         </div>
                     </form>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </div>
     )
 }

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
 
+import { motion } from "framer-motion";
+
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 import { notify } from "../../utility/notify"
 import AllContacts from "../dashboard/AllContacts";
-import  Loader  from "../loader/Loader";
+import Loader from "../loader/Loader";
 import Modal from './Modal';
 
 
@@ -16,8 +18,7 @@ const UserInfo = () => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [contacts, setContacts] = useState(null)
+    const [contacts, setContacts] = useState([])
     const [user, setUser] = useState(null)
     const [token, setToken] = useState(localStorage.getItem("accessToken"))
 
@@ -45,6 +46,8 @@ const UserInfo = () => {
                 console.error('Error fetching contacts:', error);
             });
     }, [token]);
+
+    
 
 
 
@@ -74,14 +77,10 @@ const UserInfo = () => {
     }, [token])
 
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        if (isSubmitting) {
-            return;
-        }
-        setIsSubmitting(true);
+    const handleSubmit = (event, method) => {
+        event.preventDefault()
         fetch(`${process.env.REACT_APP_API_URL}/api/contacts`, {
-            method: 'POST',
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
@@ -111,7 +110,6 @@ const UserInfo = () => {
             })
             .finally(() => {
                 handleModalClose()
-                setIsSubmitting(false)
             });
     };
 
@@ -133,7 +131,7 @@ const UserInfo = () => {
         navigate("/")
     }
 
-    if (!user || !contacts ) {
+    if (!user || !contacts) {
         return (
             <div>
                 <h1 className='text-2xl flex justify-center h-screen items-center font-semibold'>
@@ -142,14 +140,25 @@ const UserInfo = () => {
                 </h1>
             </div>
         )
-        
+
+    }
+
+    const animations = {
+        initial: { opacity: 0, y: 50 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.5 }
+
     }
 
 
 
     return (
-        <div className={`p-8 ${isModalOpen} ? opacity-50 : ' `}>
-            <div className="flex justify-evenly space-x-2 mb-8 mx-14 ">
+        <div className={`p-8 `}>
+            <motion.div
+                initial={animations.initial}
+                animate={animations.animate}
+                transition={animations.transition}
+                className="flex justify-evenly space-x-2 mb-8 mx-14 ">
                 <h2 className="text-3xl font-bold ">Welcome, { }{user.email}!</h2>
 
                 <button
@@ -164,16 +173,16 @@ const UserInfo = () => {
                 >
                     Log Out
                 </button>
-            </div>
+            </motion.div>
             <div className="bg-white overflow-auto rounded-lg shadow-lg p-8">
-                < AllContacts contacts={contacts} setContacts={setContacts} />
+                < AllContacts contacts={contacts} setContacts={setContacts} handleModalOpen = {handleModalOpen} handleModalClose={ {handleModalClose}}/>
 
                 {/* Render contacts here */}
             </div>
 
             {/* Modal */}
             {isModalOpen && (
-                <Modal handleSubmit = {handleSubmit} setName = {setName} setEmail= {setEmail} setPhone = {setPhone}  />
+                <Modal handleSubmit={handleSubmit} setName={setName} setEmail={setEmail} setPhone={setPhone} handleModalClose = {handleModalClose} head = {"Add Contact"}  />
             )}
             <ToastContainer />
         </div>
