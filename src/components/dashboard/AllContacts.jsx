@@ -5,6 +5,8 @@ import { notify } from "../../utility/notify"
 import Modal from './Modal';
 
 import { ToastContainer } from 'react-toastify';
+import { animations } from "../../utility/framer";
+
 
 const AllContacts = ({ contacts, setContacts }) => {
 
@@ -64,6 +66,7 @@ const AllContacts = ({ contacts, setContacts }) => {
       notify(`${updatedContact.email} Updated`)
       setContacts(contacts.filter(contact => contact._id !== id))
       setContacts((c) => [...c, updatedContact])
+      setContacts((contacts) => contacts.sort((a, b) => a.name.localeCompare(b.name)));
     } catch (error) {
       console.error(error)
       notify(error)
@@ -71,12 +74,7 @@ const AllContacts = ({ contacts, setContacts }) => {
   };
 
 
-  const animations = {
-    initial: { opacity: 0, y: 50 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5 }
 
-  }
 
   return (
     <motion.div

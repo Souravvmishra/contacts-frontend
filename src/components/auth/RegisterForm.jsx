@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { motion } from 'framer-motion';
 
 import { notify } from "../../utility/notify";
 import Loader from '../loader/Loader';
+import { animations } from "../../utility/framer";
 
 
 
@@ -58,14 +59,25 @@ const RegisterForm = () => {
 
 
 
+
     return (
 
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-pink-500">
+        <motion.div
 
-            <div className="bg-white rounded-lg shadow-lg p-8">
+            className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-pink-500">
+
+            <motion.div
+                initial={animations.initial}
+                animate={animations.animate}
+                transition={animations.transition}
+                className="bg-white rounded-lg shadow-lg p-8">
                 <h2 className="text-3xl font-bold mb-8">Create an Account</h2>
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-6">
+                    <motion.div
+                        initial={animations.initial}
+                        animate={animations.animate}
+                        transition={{ duration: 0.5, delay: 0.1 }}
+                        className="mb-6">
                         <label htmlFor="name" className="block font-semibold mb-2">
                             Name
                         </label>
@@ -77,8 +89,12 @@ const RegisterForm = () => {
                             className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
                             placeholder="Enter your name"
                         />
-                    </div>
-                    <div className="mb-6">
+                    </motion.div>
+                    <motion.div
+                        initial={animations.initial}
+                        animate={animations.animate}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="mb-6">
                         <label htmlFor="email" className="block font-semibold mb-2">
                             Email
                         </label>
@@ -90,8 +106,12 @@ const RegisterForm = () => {
                             className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
                             placeholder="Enter your email"
                         />
-                    </div>
-                    <div className="mb-6">
+                    </motion.div>
+                    <motion.div
+                        initial={animations.initial}
+                        animate={animations.animate}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                        className="mb-6">
                         <label htmlFor="password" className="block font-semibold mb-2">
                             Password
                         </label>
@@ -103,13 +123,16 @@ const RegisterForm = () => {
                             className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-purple-500"
                             placeholder="Enter your password"
                         />
-                    </div>
-                    <button
+                    </motion.div>
+                    <motion.button
+                        initial={animations.initial}
+                        animate={animations.animate}
+                        transition={{ duration: 0.5, delay: 0.4}}
                         type="submit"
                         className="flex justify-center w-full bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition-colors duration-300 text-center"
                     >
                         {loading ? <Loader /> : 'Register'}
-                    </button>
+                    </motion.button>
                 </form>
                 <div className="mt-4 text-center">
                     <span className="text-gray-500">Already have an account?</span>{' '}
@@ -120,10 +143,10 @@ const RegisterForm = () => {
                         Login here
                     </Link>
                 </div>
-            </div>
-            <ToastContainer 
+            </motion.div>
+            <ToastContainer
             />
-        </div>
+        </motion.div>
     )
 }
 

@@ -1,17 +1,13 @@
 import React from 'react'
 import { motion } from "framer-motion";
+import { animations } from "../../utility/framer";
 
 
 
 
 const Modal = (props) => {
 
-    const animations = {
-        initial: { opacity: 0, y: 50 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.2 }
-
-    }
+    
 
     return (
         <div>

@@ -11,6 +11,7 @@ import { notify } from "../../utility/notify"
 import AllContacts from "../dashboard/AllContacts";
 import Loader from "../loader/Loader";
 import Modal from './Modal';
+import { animations } from "../../utility/framer";
 
 
 const UserInfo = () => {
@@ -77,10 +78,10 @@ const UserInfo = () => {
     }, [token])
 
 
-    const handleSubmit = (event, method) => {
+    const handleSubmit = (event) => {
         event.preventDefault()
         fetch(`${process.env.REACT_APP_API_URL}/api/contacts`, {
-            method: method,
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
@@ -100,6 +101,7 @@ const UserInfo = () => {
                 }
                 notify(`${data.name} added successfully`);
                 setContacts((contacts) => [...contacts, data])
+                setContacts((contacts) => contacts.sort((a, b) => a.name.localeCompare(b.name)));
                 setName('');
                 setEmail('');
                 setPhone('');
@@ -143,13 +145,7 @@ const UserInfo = () => {
 
     }
 
-    const animations = {
-        initial: { opacity: 0, y: 50 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.5 }
-
-    }
-
+    
 
 
     return (
